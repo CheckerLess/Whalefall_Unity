@@ -106,7 +106,7 @@ namespace GMTK.PlatformerToolkit {
             else if (playerGrounded && !jumpScript.onGround) {
                 // Player has left the ground, so stop playing the running particles
                 playerGrounded = false;
-                moveParticles.Stop();
+                moveParticles.Play();
             }
         }
 
