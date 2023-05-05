@@ -7,34 +7,33 @@ public class RotateToMouse : MonoBehaviour
     Vector2 m_MyFirstVector;
     Vector2 m_MySecondVector;
     Vector3 MousePos;
-    float m_Angle;
+    Quaternion m_Angle;
 
     //You must assign to these two GameObjects in the Inspector
     public GameObject m_MyObject;
+    public GameObject m_MySecondObject;
 
     private void Start()
     {
         m_MyFirstVector = Vector2.zero;
         m_MySecondVector = Vector2.zero;
-        MousePos = Vector3.zero;
-        m_Angle = 0.0f;
     }
 
     void Update()
     {
-        //Fetch the first GameObject's position
-        m_MyFirstVector = new Vector2(m_MyObject.transform.position.x, m_MyObject.transform.position.y);
 
-        //Fetch the second GameObject's position
-        MousePos = Camera.main.ScreenToViewportPoint(Input.mousePosition);
-        m_MySecondVector = new Vector2(MousePos.x, MousePos.y);
+        //Rotate towards target
+        Vector3 targ = m_MySecondObject.transform.position;
+        targ.z = 0f;
 
-        //Find the angle for the two Vectors
-        m_Angle = Vector2.Angle(m_MyFirstVector, m_MySecondVector);
-        
+        Vector3 objectPos = m_MyObject.transform.position + new Vector3(0,1.6f,0);
+        targ.x = targ.x - objectPos.x;
+        targ.y = targ.y - objectPos.y;
 
-        //update the position
-        transform.rotation = Quaternion.Euler(0, 0, m_Angle);
+        float angle = Mathf.Atan2(targ.y, targ.x) * Mathf.Rad2Deg;
+        transform.rotation = Quaternion.Euler(new Vector3(0, 0, angle));
+
+        transform.position = objectPos;
     }
 
     void OnGUI()
@@ -43,5 +42,7 @@ public class RotateToMouse : MonoBehaviour
         GUI.Label(new Rect(25, 25, 200, 40), "Angle Between Objects" + m_Angle);
         GUI.Label(new Rect(25, 50, 200, 65), "MouseX" + MousePos.x);
         GUI.Label(new Rect(25, 75, 200, 90), "MouseY" + MousePos.y);
+        GUI.Label(new Rect(25, 100, 200, 115), "OBJ_XPOS" + m_MyObject.transform.position.x);
+        GUI.Label(new Rect(25, 125, 200, 140), "OBJ_YPOS" + m_MyObject.transform.position.y);
     }
 }
